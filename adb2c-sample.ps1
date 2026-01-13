@@ -1,8 +1,8 @@
 ﻿# =========================
 # ==== 1) 設定値を入力 ====
 # =========================
-$tenantName = 'aa99999999'
-$clientId   = 'yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyy'
+$tenantName = Read-Host "テナント名(例：aa99999999)を入力してください。"
+$clientId   = Read-Host "クライアントID(例:yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyy)を入力してください。"
 $policy     = 'b2c_1_fjcloud_genai_susi'
 
 # 推奨: 明示的なポート/パスを使う（管理者権限不要）。アプリ登録のRedirect URIと一致させてください。
