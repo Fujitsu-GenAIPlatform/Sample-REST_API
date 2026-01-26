@@ -1,4 +1,5 @@
-﻿# =========================
+﻿# 管理者モードで起動すること
+# =========================
 # ==== 1) 設定値を入力 ====
 # =========================
 $tenantName = Read-Host "テナント名(例：aa99999999)を入力してください。"
@@ -27,10 +28,28 @@ Write-Host "Open browser for sign-in: $authorizeUrl"
 
 # ブラウザーでサインイン開始
 Start-Process $authorizeUrl
-Write-Host "ブラウザでサインインし、リダイレクト後のアドレスバーのURLをコピーしてください。"
 
-# ユーザーが貼り付けたURLから code を抽出（HttpListener 不要）
-$code = Read-Host "リダイレクト先のURLのcode=以降を貼り付けて Enter（例: http://localhost:8400/callback?code=...）"
+# ------ 管理者モードで実行が必要な部分(開始)
+Write-Host "ブラウザでサインインしてください。”
+# ローカルで HTTP リスナーを開始
+$listener = New-Object System.Net.HttpListener
+$listener.Prefixes.Add("http://localhost/")
+$listener.Start()
+Write-Host "Waiting for redirect..."
+# ブラウザからのアクセスを待つ
+$context = $listener.GetContext()
+$request = $context.Request
+# URL の code パラメータを取得
+$code = $request.QueryString["code"]
+$listener.Stop()
+# ------ 管理者モードで実行が必要な部分(終了)
+
+# ------ 管理者モードで起動できない場合
+# Write-Host "ブラウザでサインインし、リダイレクト後のアドレスバーのURLをコピーしてください。"
+#
+# # ユーザーが貼り付けたURLから code を抽出（HttpListener 不要）
+# $code = Read-Host "リダイレクト先のURLのcode=以降を貼り付けて Enter（例: http://localhost:8400/callback?code=...）"
+
 Write-Host "認可コードの取得に成功しました。code=$code"
 
 # =========================
